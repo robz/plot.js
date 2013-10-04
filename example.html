@@ -3,36 +3,36 @@
 <script src="plot.js"></script>
 <script>
 var plot = createPlot({
-	container: "container", 
-	pixelWidth: 300, 
-	pixelHeight: 300, 
-	minX: -10, 
-	maxX: 10, 
-	minY: -10, 
-	maxY: 10,
-	pointRadius: 5,
-	lineWidth: 5,
-	drawColor: "blue",
-	backgroundColor: "lightGray"
-	});
-	
+    container: "container", 
+    pixelWidth: 300, 
+    pixelHeight: 300, 
+    minX: -10, 
+    maxX: 10, 
+    minY: -10, 
+    maxY: 10,
+    pointRadius: 5,
+    lineWidth: 5,
+    drawColor: "blue",
+    backgroundColor: "lightGray"
+    });
+    
 var maxCount = 200,
-	count = 0;
+    count = 0;
 
 plot.drawPoint(0, 0, {drawColor: "darkGray", pointRadius: 10});
 plot.storeBackground();
 
 setInterval( function () {
-	var theta = count*Math.PI*2/maxCount;
-	
-	var x = 9*Math.cos(theta),
-		y = 9*Math.sin(theta);
-	
-	plot.restoreBackground();
-	plot.drawLine(0, 0, x, y);
-	plot.drawPoint(x, y, {drawColor: "red"});
+    var theta = count*Math.PI*2/maxCount;
+    
+    var x = 9*Math.cos(theta),
+        y = 9*Math.sin(theta);
+    
+    plot.restoreBackground();
+    plot.drawLine(0, 0, x, y);
+    plot.drawPoint(x, y, {drawColor: "red"});
 
-	count = (count+1)%maxCount;
+    count = (count+1)%maxCount;
 }, 30);
 </script>
 </html>
