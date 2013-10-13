@@ -2,7 +2,7 @@
 <div id="container"></div>
 <script src="plot.js"></script>
 <script>
-var plot = createPlot({
+var plot = Plot.create({
     container: "container",
     pixelWidth: 300,
     pixelHeight: 400,
@@ -10,7 +10,6 @@ var plot = createPlot({
     maxX: 10,
     minY: 0,
     maxY: 10,
-    pointRadius: 5,
     lineWidth: .1,
     drawColor: "blue",
     backgroundColor: "lightGray"

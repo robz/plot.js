@@ -1,5 +1,16 @@
-var createPlot = function (config)
-{
+var Plot = function () {};
+
+Plot.createRequireParameters = [
+    "container",
+    "pixelWidth",  // canvas scale
+    "pixelHeight", // canvas scale
+    "minX",        // plot scale
+    "maxX",        // plot scale
+    "minY",        // plot scale
+    "maxY"         // plot scale
+    ];
+
+Plot.create = function (config) {
     // object to be returned
     var that = {};
 
@@ -9,7 +20,13 @@ var createPlot = function (config)
     that.DRAW_COLOR = "black";
     that.BACKGROUND_COLOR = "white";
 
-    // parameters
+    // required parameters
+    Plot.createRequireParameters.forEach(function(elem) {
+        if (!config[elem]) {
+            throw "missing required \'" + elem + "\' parameter";
+        }
+    });
+
     var container = config.container,
         pixelWidth = config.pixelWidth,
         pixelHeight = config.pixelHeight,
@@ -25,15 +42,17 @@ var createPlot = function (config)
     that.BACKGROUND_COLOR = config.backgroundColor || that.BACKGROUND_COLOR;
 
     // public variables
-    that.width = null;
-    that.height = null;
+    that.width = null;  // plot scale
+    that.height = null; // plot scale
 
     // private variables
     var canvas,
         ctx,
         buffer;
 
+    //
     // private methods
+    //
     var canvasXToPlotX = function (x) {
             return x*that.width/pixelWidth + minX;
         },
