@@ -1,4 +1,6 @@
-var Plot = function () {};
+var Plot = function () {
+    "use strict";
+};
 
 Plot.createRequireParameters = [
     "container",
@@ -8,32 +10,52 @@ Plot.createRequireParameters = [
     "maxX",        // plot scale
     "minY",        // plot scale
     "maxY"         // plot scale
-    ];
+];
 
 Plot.create = function (config) {
-    // object to be returned
-    var that = {};
+    "use strict";
 
-    // defaults
-    that.POINT_RADIUS = .01;
-    that.LINE_WIDTH = .01;
-    that.DRAW_COLOR = "black";
-    that.BACKGROUND_COLOR = "white";
-
-    // required parameters
-    Plot.createRequireParameters.forEach(function(elem) {
+    // required parameter check
+    Plot.createRequireParameters.forEach(function (elem) {
         if (!config[elem]) {
             throw "missing required \'" + elem + "\' parameter";
         }
     });
 
-    var container = config.container,
+    // object to be returned
+    var that = {},
+
+    // private variables
+        canvas,
+        ctx,
+        buffer,
+
+    // required parameters
+        container = config.container,
         pixelWidth = config.pixelWidth,
         pixelHeight = config.pixelHeight,
         minX = config.minX,
         maxX = config.maxX,
         minY = config.minY,
-        maxY = config.maxY;
+        maxY = config.maxY,
+
+    //
+    // private methods
+    //
+        plotXToCanvasX = function (x) {
+            return (x - minX) * pixelWidth / that.width;
+        },
+
+        plotYToCanvasY = function (y) {
+            return pixelHeight - (y - minY) * pixelHeight / that.height;
+        };
+
+    // defaults
+    that.POINT_RADIUS = 0.01;
+    that.LINE_WIDTH = 0.01;
+    that.DRAW_COLOR = "black";
+    that.BACKGROUND_COLOR = "white";
+
 
     // configurations (optional parameters)
     that.POINT_RADIUS = config.pointRadius || that.POINT_RADIUS;
@@ -45,29 +67,6 @@ Plot.create = function (config) {
     that.width = null;  // plot scale
     that.height = null; // plot scale
 
-    // private variables
-    var canvas,
-        ctx,
-        buffer;
-
-    //
-    // private methods
-    //
-    var canvasXToPlotX = function (x) {
-            return x*that.width/pixelWidth + minX;
-        },
-
-        canvasYToPlotY = function (y) {
-            return (pixelHeight - y)*that.height/pixelHeight + minY;
-        },
-
-        plotXToCanvasX = function (x) {
-            return (x - minX)*pixelWidth/that.width;
-        },
-
-        plotYToCanvasY = function (y) {
-            return pixelHeight - (y - minY)*pixelHeight/that.height;
-        };
 
     //
     // public methods
@@ -81,10 +80,10 @@ Plot.create = function (config) {
         ctx.fillStyle = color;
 
         ctx.translate(plotXToCanvasX(0), plotYToCanvasY(0));
-        ctx.scale(pixelWidth/that.width, -pixelHeight/that.height);
+        ctx.scale(pixelWidth / that.width, -pixelHeight / that.height);
 
         ctx.beginPath();
-        ctx.arc(x, y, pointRadius, 0, Math.PI*2, false);
+        ctx.arc(x, y, pointRadius, 0, Math.PI * 2, false);
         ctx.fill();
 
         ctx.restore();
@@ -100,7 +99,7 @@ Plot.create = function (config) {
         ctx.lineWidth = lineWidth;
 
         ctx.translate(plotXToCanvasX(0), plotYToCanvasY(0));
-        ctx.scale(pixelWidth/that.width, -pixelHeight/that.height);
+        ctx.scale(pixelWidth / that.width, -pixelHeight / that.height);
 
         ctx.beginPath();
         ctx.moveTo(x1, y1);
@@ -110,7 +109,7 @@ Plot.create = function (config) {
         ctx.restore();
     };
 
-    that.drawCircle = function(x, y, radius, config) {
+    that.drawCircle = function (x, y, radius, config) {
         var color = (config && config.drawColor) || that.DRAW_COLOR,
             lineWidth = (config && config.lineWidth) || that.LINE_WIDTH;
 
@@ -120,10 +119,10 @@ Plot.create = function (config) {
         ctx.lineWidth = lineWidth;
 
         ctx.translate(plotXToCanvasX(x), plotYToCanvasY(y));
-        ctx.scale(pixelWidth/that.width, -pixelHeight/that.height);
+        ctx.scale(pixelWidth / that.width, -pixelHeight / that.height);
 
         ctx.beginPath();
-        ctx.arc(0, 0, radius, 0, Math.PI*2, false);
+        ctx.arc(0, 0, radius, 0, Math.PI * 2, false);
         ctx.stroke();
 
         ctx.restore();
@@ -157,4 +156,4 @@ Plot.create = function (config) {
     that.height = maxY - minY;
 
     return that;
-}
+};
