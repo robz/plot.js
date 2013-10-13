@@ -1,8 +1,9 @@
-var Plot = function () {
+var Plot = function (config) {
     "use strict";
-};
+    return this.create(config);
+}
 
-Plot.createRequireParameters = [
+Plot.prototype.createRequireParameters = [
     "container",
     "pixelWidth",  // canvas scale
     "pixelHeight", // canvas scale
@@ -12,13 +13,13 @@ Plot.createRequireParameters = [
     "maxY"         // plot scale
 ];
 
-Plot.create = function (config) {
+Plot.prototype.create = function (config) {
     "use strict";
 
     // required parameter check
-    Plot.createRequireParameters.forEach(function (elem) {
+    this.createRequireParameters.forEach(function (elem) {
         if (config[elem] === undefined) {
-            throw "missing required \'" + elem + "\' parameter";
+            throw "missing required '" + elem + "' parameter";
         }
     });
 
@@ -56,7 +57,6 @@ Plot.create = function (config) {
     that.DRAW_COLOR = "black";
     that.BACKGROUND_COLOR = "white";
 
-
     // configurations (optional parameters)
     that.POINT_RADIUS = config.pointRadius || that.POINT_RADIUS;
     that.LINE_WIDTH = config.lineWidth || that.LINE_WIDTH;
@@ -66,7 +66,6 @@ Plot.create = function (config) {
     // public variables
     that.width = null;  // plot scale
     that.height = null; // plot scale
-
 
     //
     // public methods
