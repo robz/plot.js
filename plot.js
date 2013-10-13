@@ -23,7 +23,7 @@ var createPlot = function (config)
     that.LINE_WIDTH = config.lineWidth || that.LINE_WIDTH;
     that.DRAW_COLOR = config.drawColor || that.DRAW_COLOR;
     that.BACKGROUND_COLOR = config.backgroundColor || that.BACKGROUND_COLOR;
-        
+
     // public variables
     that.width = null;
     that.height = null;
@@ -60,10 +60,10 @@ var createPlot = function (config)
         ctx.save();
 
         ctx.fillStyle = color;
-        
+
         ctx.translate(plotXToCanvasX(0), plotYToCanvasY(0));
         ctx.scale(pixelWidth/that.width, -pixelHeight/that.height);
-        
+
         ctx.beginPath();
         ctx.arc(x, y, pointRadius, 0, Math.PI*2, false);
         ctx.fill();
@@ -79,10 +79,10 @@ var createPlot = function (config)
 
         ctx.strokeStyle = color;
         ctx.lineWidth = lineWidth;
-        
+
         ctx.translate(plotXToCanvasX(0), plotYToCanvasY(0));
         ctx.scale(pixelWidth/that.width, -pixelHeight/that.height);
-        
+
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
@@ -90,23 +90,23 @@ var createPlot = function (config)
 
         ctx.restore();
     };
-    
+
     that.drawCircle = function(x, y, radius, config) {
         var color = (config && config.drawColor) || that.DRAW_COLOR,
             lineWidth = (config && config.lineWidth) || that.LINE_WIDTH;
-        
+
         ctx.save();
-            
+
         ctx.strokeStyle = color;
         ctx.lineWidth = lineWidth;
-        
+
         ctx.translate(plotXToCanvasX(x), plotYToCanvasY(y));
         ctx.scale(pixelWidth/that.width, -pixelHeight/that.height);
-        
+
         ctx.beginPath();
         ctx.arc(0, 0, radius, 0, Math.PI*2, false);
         ctx.stroke();
-        
+
         ctx.restore();
     };
 
