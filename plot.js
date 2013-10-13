@@ -1,9 +1,10 @@
 var Plot = function (config) {
     "use strict";
+
     return this.create(config);
 }
 
-Plot.prototype.createRequireParameters = [
+Plot.prototype.createRequiredParameters = [
     "container",
     "pixelWidth",  // canvas scale
     "pixelHeight", // canvas scale
@@ -17,9 +18,9 @@ Plot.prototype.create = function (config) {
     "use strict";
 
     // required parameter check
-    this.createRequireParameters.forEach(function (elem) {
+    this.createRequiredParameters.forEach(function (elem) {
         if (config[elem] === undefined) {
-            throw "missing required '" + elem + "' parameter";
+            throw "error: missing required '" + elem + "' parameter";
         }
     });
 
@@ -127,7 +128,7 @@ Plot.prototype.create = function (config) {
         ctx.restore();
     };
 
-    that.restoreBackground = function () {
+    that.restoreToBackground = function () {
         ctx.putImageData(buffer, 0, 0);
     };
 
@@ -149,6 +150,7 @@ Plot.prototype.create = function (config) {
     ctx.fillStyle = that.BACKGROUND_COLOR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
+
     that.storeBackground();
 
     that.width = maxX - minX;
