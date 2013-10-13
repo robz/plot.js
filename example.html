@@ -8,10 +8,10 @@ var plot = createPlot({
     pixelHeight: 300, 
     minX: -10, 
     maxX: 10, 
-    minY: -10, 
+    minY: -10,
     maxY: 10,
-    pointRadius: 5,
-    lineWidth: 5,
+    pointRadius: .5,
+    lineWidth: .1,
     drawColor: "blue",
     backgroundColor: "lightGray"
     });
@@ -19,7 +19,7 @@ var plot = createPlot({
 var maxCount = 200,
     count = 0;
 
-plot.drawPoint(0, 0, {drawColor: "darkGray", pointRadius: 10});
+plot.drawPoint(0, 0, {drawColor: "darkGray", pointRadius: 1}); 
 plot.storeBackground();
 
 setInterval( function () {

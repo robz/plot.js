@@ -4,8 +4,8 @@ var createPlot = function (config)
     var that = {};
 
     // defaults
-    that.POINT_RADIUS = 1;
-    that.LINE_WIDTH = 1;
+    that.POINT_RADIUS = .01;
+    that.LINE_WIDTH = .01;
     that.DRAW_COLOR = "black";
     that.BACKGROUND_COLOR = "white";
 
@@ -23,29 +23,31 @@ var createPlot = function (config)
     that.LINE_WIDTH = config.lineWidth || that.LINE_WIDTH;
     that.DRAW_COLOR = config.drawColor || that.DRAW_COLOR;
     that.BACKGROUND_COLOR = config.backgroundColor || that.BACKGROUND_COLOR;
+        
+    // public variables
+    that.width = null;
+    that.height = null;
 
     // private variables
     var canvas,
         ctx,
-        plotWidth, 
-        plotHeight,
         buffer;
 
     // private methods
     var canvasXToPlotX = function (x) {
-            return x*plotWidth/pixelWidth + minX;
+            return x*that.width/pixelWidth + minX;
         },
 
         canvasYToPlotY = function (y) {
-            return (pixelHeight - y)*plotHeight/pixelHeight + minY;
+            return (pixelHeight - y)*that.height/pixelHeight + minY;
         },
 
         plotXToCanvasX = function (x) {
-            return (x - minX)*pixelWidth/plotWidth;
+            return (x - minX)*pixelWidth/that.width;
         },
 
         plotYToCanvasY = function (y) {
-            return pixelHeight - (y - minY)*pixelHeight/plotHeight;
+            return pixelHeight - (y - minY)*pixelHeight/that.height;
         };
 
     //
@@ -55,28 +57,32 @@ var createPlot = function (config)
         var color = (config && config.drawColor) || that.DRAW_COLOR,
             pointRadius = (config && config.pointRadius) || that.POINT_RADIUS;
 
-        x = plotXToCanvasX(x);
-        y = plotYToCanvasY(y);
+        ctx.save();
 
         ctx.fillStyle = color;
+        
+        ctx.translate(plotXToCanvasX(0), plotYToCanvasY(0));
+        ctx.scale(pixelWidth/that.width, -pixelHeight/that.height);
+        
         ctx.beginPath();
         ctx.arc(x, y, pointRadius, 0, Math.PI*2, false);
         ctx.fill();
+
+        ctx.restore();
     };
 
     that.drawLine = function (x1, y1, x2, y2, config) {
         var color = (config && config.drawColor) || that.DRAW_COLOR,
             lineWidth = (config && config.lineWidth) || that.LINE_WIDTH;
 
-        x1 = plotXToCanvasX(x1);
-        y1 = plotYToCanvasY(y1);
-        x2 = plotXToCanvasX(x2);
-        y2 = plotYToCanvasY(y2);
-
         ctx.save();
 
         ctx.strokeStyle = color;
         ctx.lineWidth = lineWidth;
+        
+        ctx.translate(plotXToCanvasX(0), plotYToCanvasY(0));
+        ctx.scale(pixelWidth/that.width, -pixelHeight/that.height);
+        
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
@@ -84,31 +90,24 @@ var createPlot = function (config)
 
         ctx.restore();
     };
-
-    // this function is broken because context.arc will only draw a circle, 
-    // and is not able to draw an oval, so it cannot account for scaling the
-    // plot in a way that does not preserve the pixel aspect ratio
-    that.drawCircle = function (x, y, radius, config) {
-        throw "not implemented";
-
-        /*
+    
+    that.drawCircle = function(x, y, radius, config) {
         var color = (config && config.drawColor) || that.DRAW_COLOR,
             lineWidth = (config && config.lineWidth) || that.LINE_WIDTH;
         
-        x = plotXToCanvasX(x);
-        y = plotYToCanvasY(y);
-        radius = plotXToCanvasX(radius);
-        
         ctx.save();
-        
+            
         ctx.strokeStyle = color;
         ctx.lineWidth = lineWidth;
+        
+        ctx.translate(plotXToCanvasX(x), plotYToCanvasY(y));
+        ctx.scale(pixelWidth/that.width, -pixelHeight/that.height);
+        
         ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI*2, false);
+        ctx.arc(0, 0, radius, 0, Math.PI*2, false);
         ctx.stroke();
         
         ctx.restore();
-        */
     };
 
     that.restoreBackground = function () {
@@ -135,8 +134,8 @@ var createPlot = function (config)
     ctx.restore();
     that.storeBackground();
 
-    plotWidth = maxX - minX;
-    plotHeight = maxY - minY;
+    that.width = maxX - minX;
+    that.height = maxY - minY;
 
     return that;
 }
