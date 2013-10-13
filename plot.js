@@ -17,7 +17,7 @@ Plot.create = function (config) {
 
     // required parameter check
     Plot.createRequireParameters.forEach(function (elem) {
-        if (!config[elem]) {
+        if (config[elem] === undefined) {
             throw "missing required \'" + elem + "\' parameter";
         }
     });

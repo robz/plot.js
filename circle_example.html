@@ -4,27 +4,28 @@
 <script>
 (function () {
     var plot = Plot.create({
-        container: "container",
-        pixelWidth: 300,
-        pixelHeight: 400,
-        minX: 0,
-        maxX: 10,
-        minY: 0,
-        maxY: 10,
-        lineWidth: 0.1,
-        drawColor: "blue",
-        backgroundColor: "lightGray"
-        });
+            container: "container",
+            pixelWidth: 300,
+            pixelHeight: 400,
+            minX: 0,
+            maxX: 10,
+            minY: 0,
+            maxY: 10,
+            lineWidth: 0.1,
+            drawColor: "blue",
+            backgroundColor: "lightGray"
+        }),
+        numCircles = 10,
+        maxRadius = 5,
+        i = 0;
 
-    var numCircles = 10,
-        maxRadius = 5;
-
-    for (var i = 0; i < numCircles; i++) {
+    for (i = 0; i < numCircles; i += 1) {
         plot.drawCircle(
-            Math.random()*plot.width,
-            Math.random()*plot.height,
-            Math.random()*maxRadius);
+            Math.random() * plot.width,
+            Math.random() * plot.height,
+            Math.random() * maxRadius
+        );
     }
-})();
+}());
 </script>
 </html>
