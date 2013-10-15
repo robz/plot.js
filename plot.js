@@ -118,15 +118,41 @@ Plot.prototype.create = function (config) {
         ctx.strokeStyle = color;
         ctx.lineWidth = lineWidth;
 
-        ctx.translate(plotXToCanvasX(x), plotYToCanvasY(y));
+        ctx.translate(plotXToCanvasX(0), plotYToCanvasY(0));
         ctx.scale(pixelWidth / that.width, -pixelHeight / that.height);
 
         ctx.beginPath();
-        ctx.arc(0, 0, radius, 0, Math.PI * 2, false);
+        ctx.arc(x, y, radius, 0, Math.PI * 2, false);
         ctx.stroke();
 
         ctx.restore();
     };
+    
+    that.drawCurve = function (points, config) {
+        var color = (config && config.drawColor) || that.DRAW_COLOR,
+            lineWidth = (config && config.lineWidth) || that.LINE_WIDTH;
+            
+        ctx.save();
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+
+        ctx.translate(plotXToCanvasX(0), plotYToCanvasY(0));
+        ctx.scale(pixelWidth / that.width, -pixelHeight / that.height);
+
+        ctx.beginPath();
+        ctx.moveTo(points[0][0], points[0][1]);
+        for (var i = 1; i < points.length - 1; i++) {
+            ctx.bezierCurveTo(
+                points[i][0], points[i][1],
+                points[i][0], points[i][1],
+                points[i+1][0], points[i+1][1]);
+        }
+        
+        ctx.stroke();
+
+        ctx.restore();
+    }
 
     that.restoreToBackground = function () {
         ctx.putImageData(buffer, 0, 0);
