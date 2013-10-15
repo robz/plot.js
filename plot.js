@@ -50,6 +50,14 @@ Plot.prototype.create = function (config) {
 
         plotYToCanvasY = function (y) {
             return pixelHeight - (y - minY) * pixelHeight / that.height;
+        },
+        
+        canvasXToPlotX = function (x) {
+            return (x * that.width) / pixelWidth + minX;
+        },
+
+        canvasYToPlotY = function (y) {
+            return ((pixelHeight - y) * that.height) / pixelHeight + minY;
         };
 
     // defaults
@@ -160,6 +168,13 @@ Plot.prototype.create = function (config) {
 
     that.storeBackground = function () {
         buffer = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    };
+    
+    that.setMouseDown = function (f) {
+        canvas.onmousedown = function (e) {
+            f(canvasXToPlotX(e.offsetX),
+              canvasYToPlotY(e.offsetY));
+        };
     };
 
     //
