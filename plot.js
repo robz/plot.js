@@ -168,6 +168,21 @@ Plot.prototype.create = function (config) {
                 drawColor: color});
         });
     };
+    
+    that.drawRect = function (x, y, width, height, config) {
+        var color = (config && config.drawColor) || that.DRAW_COLOR;
+
+        ctx.save();
+
+        ctx.fillStyle = color;
+
+        ctx.translate(plotXToCanvasX(0), plotYToCanvasY(0));
+        ctx.scale(pixelWidth / that.width, -pixelHeight / that.height);
+
+        ctx.fillRect(x, y, width, height);
+
+        ctx.restore();
+    };
 
     that.clear = function () {
         ctx.putImageData(clearBuffer, 0, 0);
