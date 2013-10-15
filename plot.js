@@ -136,7 +136,7 @@ Plot.prototype.create = function (config) {
         ctx.restore();
     };
     
-    that.drawCurve = function (points, config) {
+    that.drawPath = function (points, config) {
         var color = (config && config.drawColor) || that.DRAW_COLOR,
             lineWidth = (config && config.lineWidth) || that.LINE_WIDTH;
             
@@ -150,16 +150,18 @@ Plot.prototype.create = function (config) {
 
         ctx.beginPath();
         ctx.moveTo(points[0][0], points[0][1]);
-        for (var i = 1; i < points.length - 1; i++) {
-            ctx.bezierCurveTo(
-                points[i][0], points[i][1],
-                points[i][0], points[i][1],
-                points[i+1][0], points[i+1][1]);
+        for (var i = 1; i < points.length; i++) {
+            ctx.lineTo(points[i][0], points[i][1]);
         }
-        
         ctx.stroke();
 
         ctx.restore();
+        
+        points.forEach(function (e) {
+            that.drawPoint(e[0], e[1], {
+                pointRadius:lineWidth*.75,
+                drawColor: color});
+        });
     }
 
     that.restoreToBackground = function () {
@@ -172,6 +174,20 @@ Plot.prototype.create = function (config) {
     
     that.setMouseDown = function (f) {
         canvas.onmousedown = function (e) {
+            f(canvasXToPlotX(e.offsetX),
+              canvasYToPlotY(e.offsetY));
+        };
+    };
+    
+    that.setMouseUp = function (f) {
+        canvas.onmouseup = function (e) {
+            f(canvasXToPlotX(e.offsetX),
+              canvasYToPlotY(e.offsetY));
+        };
+    };
+    
+    that.setMouseDrag = function (f) {
+        canvas.onmousedrag = function (e) {
             f(canvasXToPlotX(e.offsetX),
               canvasYToPlotY(e.offsetY));
         };
