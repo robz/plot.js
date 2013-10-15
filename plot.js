@@ -31,6 +31,7 @@ Plot.prototype.create = function (config) {
         canvas,
         ctx,
         buffer,
+        clearBuffer,
 
     // required parameters
         container = config.container,
@@ -58,6 +59,10 @@ Plot.prototype.create = function (config) {
 
         canvasYToPlotY = function (y) {
             return ((pixelHeight - y) * that.height) / pixelHeight + minY;
+        },
+
+        setClearBuffer = function () {
+            clearBuffer = ctx.getImageData(0, 0, canvas.width, canvas.height);
         };
 
     // defaults
@@ -162,7 +167,11 @@ Plot.prototype.create = function (config) {
                 pointRadius:lineWidth*.75,
                 drawColor: color});
         });
-    }
+    };
+
+    that.clear = function () {
+        ctx.putImageData(clearBuffer, 0, 0);
+    };
 
     that.restoreToBackground = function () {
         ctx.putImageData(buffer, 0, 0);
@@ -186,8 +195,8 @@ Plot.prototype.create = function (config) {
         };
     };
     
-    that.setMouseDrag = function (f) {
-        canvas.onmousedrag = function (e) {
+    that.setMouseMove = function (f) {
+        canvas.onmousemove = function (e) {
             f(canvasXToPlotX(e.offsetX),
               canvasYToPlotY(e.offsetY));
         };
@@ -202,12 +211,13 @@ Plot.prototype.create = function (config) {
     document.getElementById(container).appendChild(canvas);
 
     ctx = canvas.getContext('2d');
-
+    
     ctx.save();
     ctx.fillStyle = that.BACKGROUND_COLOR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
 
+    setClearBuffer();
     that.storeBackground();
 
     that.width = maxX - minX;
