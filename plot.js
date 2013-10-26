@@ -59,10 +59,6 @@ Plot.prototype.create = function (config) {
 
         canvasYToPlotY = function (y) {
             return ((pixelHeight - y) * that.height) / pixelHeight + minY;
-        },
-
-        setClearBuffer = function () {
-            clearBuffer = ctx.getImageData(0, 0, canvas.width, canvas.height);
         };
 
     // defaults
@@ -117,6 +113,38 @@ Plot.prototype.create = function (config) {
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        ctx.restore();
+    };
+    
+    that.drawArrowHead = function (x, y, theta, config) {
+        var arrowHeadLength = (config && config.arrowHeadLength) || .4,
+            arrowHeadIncidentAngle = (config && config.arrowHeadIncidentAngle) || Math.PI/2;
+    
+        var x2 = x + arrowHeadLength*Math.cos(theta + (2*Math.PI + arrowHeadIncidentAngle)/2),
+            y2 = y + arrowHeadLength*Math.sin(theta + (2*Math.PI + arrowHeadIncidentAngle)/2),
+            x3 = x + arrowHeadLength*Math.cos(theta - (2*Math.PI + arrowHeadIncidentAngle)/2),
+            y3 = y + arrowHeadLength*Math.sin(theta - (2*Math.PI + arrowHeadIncidentAngle)/2);
+        
+        that.drawLine(x, y, x2, y2, config);
+        that.drawLine(x, y, x3, y3, config);
+    };
+    
+    that.drawArc = function (x, y, radius, t1, t2, clockwise, config) {
+        var color = (config && config.drawColor) || that.DRAW_COLOR,
+            lineWidth = (config && config.lineWidth) || that.LINE_WIDTH;
+
+        ctx.save();
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+
+        ctx.translate(plotXToCanvasX(0), plotYToCanvasY(0));
+        ctx.scale(pixelWidth / that.width, -pixelHeight / that.height);
+
+        ctx.beginPath();
+        ctx.arc(x, y, radius, t1, t2, clockwise);
         ctx.stroke();
 
         ctx.restore();
@@ -183,17 +211,20 @@ Plot.prototype.create = function (config) {
 
         ctx.restore();
     };
+    
+    var bufferStack = [];
 
-    that.clear = function () {
-        ctx.putImageData(clearBuffer, 0, 0);
+    that.popBackground = function () {
+        that.restoreToBackground();
+        bufferStack.pop();
     };
 
     that.restoreToBackground = function () {
-        ctx.putImageData(buffer, 0, 0);
+        ctx.putImageData(bufferStack[bufferStack.length - 1], 0, 0);
     };
 
-    that.storeBackground = function () {
-        buffer = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    that.pushBackground = function () {
+        bufferStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
     };
     
     that.setMouseDown = function (f) {
@@ -216,6 +247,12 @@ Plot.prototype.create = function (config) {
               canvasYToPlotY(e.offsetY));
         };
     };
+    
+    that.setMouseOut = function (f) {
+        canvas.onmouseout = function () {
+            f();
+        };
+    };
 
     //
     // construction
@@ -232,8 +269,7 @@ Plot.prototype.create = function (config) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
 
-    setClearBuffer();
-    that.storeBackground();
+    that.pushBackground();
 
     that.width = maxX - minX;
     that.height = maxY - minY;

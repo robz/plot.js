@@ -22,7 +22,7 @@
         count = 0;
 
     plot.drawPoint(0, 0, {drawColor: "darkGray", pointRadius: 1});
-    plot.storeBackground();
+    plot.pushBackground();
 
     setInterval(function () {
         var theta = count * Math.PI * 2 / maxCount,
