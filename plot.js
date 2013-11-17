@@ -76,10 +76,29 @@ Plot.prototype.create = function (config) {
     // public variables
     that.width = null;  // plot scale
     that.height = null; // plot scale
+    
+    // TODO: these only exist here because drawText is a hack... they could be removed
+    that.pixelWidth = config.pixelWidth,
+    that.pixelHeight = config.pixelHeight,
 
     //
     // public methods
     //
+    
+    that.drawText = function (text, x, y, config) {
+        var color = (config && config.drawColor) || that.DRAW_COLOR,
+            font = (config && config.font) || null;
+
+        ctx.save();
+
+        ctx.fillStyle = color;
+        if (font) { ctx.font = font; }
+
+        ctx.fillText(text, x, y);
+
+        ctx.restore();
+    };
+    
     that.drawPoint = function (x, y, config) {
         var color = (config && config.drawColor) || that.DRAW_COLOR,
             pointRadius = (config && config.pointRadius) || that.POINT_RADIUS;
