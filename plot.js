@@ -260,6 +260,11 @@ Plot.prototype.create = function (config) {
     canvas = document.createElement("canvas");
     canvas.width = Math.floor(pixelWidth);
     canvas.height = Math.floor(pixelHeight);
+    
+    if (document.getElementById(container) === null) {
+        throw "invalid container DOM ID";
+    }
+    
     document.getElementById(container).appendChild(canvas);
 
     ctx = canvas.getContext('2d');
