@@ -190,7 +190,8 @@ Plot.prototype.create = function (config) {
     
     that.drawPath = function (points, config) {
         var color = (config && config.drawColor) || that.DRAW_COLOR,
-            lineWidth = (config && config.lineWidth) || that.LINE_WIDTH;
+            lineWidth = (config && config.lineWidth) || that.LINE_WIDTH,
+            pointRadius = (config && config.pointRadius) || that.POINT_RADIUS;
             
         ctx.save();
 
@@ -205,13 +206,14 @@ Plot.prototype.create = function (config) {
         for (var i = 1; i < points.length; i++) {
             ctx.lineTo(points[i][0], points[i][1]);
         }
+        ctx.lineTo(points[0][0], points[0][1]);
         ctx.stroke();
 
         ctx.restore();
         
         points.forEach(function (e) {
             that.drawPoint(e[0], e[1], {
-                pointRadius:lineWidth*.75,
+                pointRadius: pointRadius,
                 drawColor: color});
         });
     };
